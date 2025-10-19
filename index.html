@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cờ Tỷ Phú 20/10</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="particles-js"></div>
+
+    <div class="game-container">
+        <h1>Trò chơi 20/10</h1>
+        <p>Tung xúc xắc để khám phá những điều bất ngờ dành riêng cho bạn!</p>
+
+        <div class="board-wrapper">
+            <div class="board" id="gameBoard">
+                <div id="playerToken" class="player-token">❤️</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div id="dice" class="dice">
+    <div class="dice-face face-1">1</div>
+    <div class="dice-face face-2">2</div>
+    <div class="dice-face face-3">3</div>
+    <div class="dice-face face-4">4</div>
+    <div class="dice-face face-5">5</div>
+    <div class="dice-face face-6">6</div>
+</div>
+            <button id="rollDiceBtn" class="roll-button">Tung Xúc Xắc</button>
+        </div>
+    </div>
+
+    <div id="giftModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div id="modalIcon" class="modal-icon">🎁</div>
+            <h2 id="modalTitle">Phần quà đặc biệt!</h2>
+            <p id="modalMessage">Nội dung quà tặng...</p>
+        </div>
+    </div>
+<div id="photoboothModal" class="modal">
+    <div class="photobooth-container">
+
+     <div class="photobooth-container">
+
+    <div id="startScreen">
+        <h2 class="photobooth-title">Chụp Photobooth Kỷ Niệm Nhá!</h2>
+        <p>Hãy chuẩn bị 4 kiểu dáng thật xinh nhé!</p>
+        <button id="startCaptureBtn" class="photobooth-button">Bắt đầu chụp</button>
+    </div>
+
+    <div id="cameraScreen" style="display: none;">
+        <div class="video-wrapper">
+            <video id="photoboothVideo" autoplay playsinline></video>
+            <div id="countdownOverlay" class="countdown-overlay"></div>
+            <div id="flashEffect" class="flash-effect"></div> </div>
+        <button id="captureBtn" class="photobooth-button">Chụp</button>
+    </div>
+
+    <div id="reviewScreen" style="display: none;">
+        <h2 class="photobooth-title">Xem lại ảnh của bạn!</h2>
+        <div id="photoPreviews" class="photo-previews">
+            </div>
+        <div class="review-buttons">
+            <button id="confirmPhotosBtn" class="photobooth-button">Ghép ảnh!</button>
+            <button id="retakeAllBtn" class="photobooth-button secondary">Chụp lại tất cả</button>
+        </div>
+    </div>
+
+    <div id="resultScreen" style="display: none;">
+        <div class="final-photo-wrapper">
+            <div class="photo-frame">
+                <canvas id="finalCanvas" class="hidden-canvas"></canvas> </div>
+            <div class="final-message">
+                <h3>Gửi em, cô gái đang tự lực cố gắng ở nơi xa </h3>
+                <p>20/10 này, anh chẳng có gì nhiều, cũng chẳng thể làm được gì, chỉ muốn gửi đến em một vài lời chúc đủ dịu dàng để động viên an ủi và đủ mạnh mẽ để tiếp thêm niềm tin cho em.
+                    Chúc em – cô gái đang học xa nhà, dù phải tự mình vượt qua biết bao áp lực và nỗi nhớ, vẫn luôn giữ được nụ cười rạng rỡ trên môi, tỏa sáng như ánh nắng đầu ngày. Anh biết cuộc sống này mệt mỏi lắm chứ, nó bào mòn mài dũa chúng ta mà, vì vậy không có con đường nào là dễ dàng, nên mong rằng em hãy tin mọi cố gắng của em hôm nay đều đang dẫn lối cho một tương lai thật đẹp phía trước, đưa những ước mơ mong muốn đến gần với em hơn. Đây là hành trình em chọn, em nỗ lực để có được nó, vì vậy em phải tự hào về hành trình này nhá, và để đạt những thứ lớn hơn phải đánh đổi những điều khác, nên là mong em sẽ ít tủi thân về việc mình không được gần gia đình, đôi khi phải xa gia đình vậy mới là điều tốt mà, vì nếu không có như vậy, thì đã không có một Tường Vi mạnh mẽ, xinh đẹp như ngày hôm nay, thật sự em rất đẹp, đẹp nhất thế gian này. Xa nhà là hành trình của trưởng thành, và em đã làm rất tốt rồi. Hãy cho phép bản thân được nghỉ ngơi một chút, hít thật sâu, và mỉm cười thật tươi nhé
+                </p>
+                <p>Chúc em không chỉ có một ngày 20/10 hạnh phúc, mà là mỗi ngày đều tìm thấy niềm vui nhỏ bé: trong một tách cà phê buổi sáng, hay đơn giản là cảm giác “mình vẫn đang cố gắng mỗi ngày”. Anh vẫn luôn ở đây và sẵn sàng giúp đỡ mỗi khi em cần, vì thế cho dù ở thành phố rộng lớn, Ngò vẫn không cô đơn đâu</p>
+                <p>Chúc em luôn mạnh mẽ, luôn xinh đẹp, và luôn hạnh phúc theo cách của riêng mình.</p>
+            </div>
+        </div>
+        <button id="saveBtn" class="photobooth-button">Lưu ảnh</button> <button id="closePhotoboothBtn" class="photobooth-button secondary">Đóng</button>
+    </div>
+
+</div>
+<canvas id="hiddenCanvas" class="hidden-canvas"></canvas>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
