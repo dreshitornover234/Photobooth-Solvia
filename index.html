@@ -3,93 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cờ Tỷ Phú 20/10</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Photobooth Solvia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <div id="particles-js"></div>
+<body class="text-gray-700">
 
-    <div class="game-container">
-        <h1>Trò chơi 20/10</h1>
-        <p>Tung xúc xắc để khám phá những điều bất ngờ dành riêng cho bạn!</p>
+    <div id="app" class="w-full min-h-screen relative">
 
-        <div class="board-wrapper">
-            <div class="board" id="gameBoard">
-                <div id="playerToken" class="player-token">❤️</div>
+        <div id="homeScreen" class="min-h-screen flex flex-col items-center justify-center p-6 text-center relative overflow-hidden">
+            <div id="floatingFramesContainer"></div>
+            <div class="relative z-10 fade-in">
+                <h1 class="font-heading text-6xl md:text-8xl text-pink-500">Photobooth Solvia</h1>
+                <p class="text-xl text-gray-600 mt-4 mb-8">Ghi lại những khoảnh khắc đáng yêu của bạn!</p>
+                <div class="flex flex-col sm:flex-row gap-7 justify-center">
+                    <button onclick="showScreen('settingsScreen')" class="px-8 py-4 bg-pink-500 text-white font-bold rounded-full text-2xl shadow-lg hover:bg-pink-600 transition-transform transform hover:scale-105 pulse-anim">Bắt đầu chụp!</button>
+                    <button onclick="showScreen('galleryScreen')" class="px-8 py-4 bg-white text-pink-500 font-bold rounded-full text-2xl shadow-lg border-2 border-pink-200 hover:bg-pink-50 transition-transform transform hover:scale-105">Xem thư viện</button>
+                </div>
+            </div>
+        </div>
+        <button id="scrollToBottomBtn" 
+      
+        class="fixed bottom-6 right-6 w-14 h-14 rounded-full text-white flex items-center justify-center shadow-lg transition-transform transform hover:scale-110 z-30">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-7 h-7">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25 12 15.75l-7.5-7.5" />
+    </svg>
+</button>
+
+        <div id="settingsScreen" class="hidden min-h-screen p-6 flex flex-col items-center justify-center">
+            <div class="max-w-4xl w-full mx-auto bg-white rounded-2xl shadow-xl p-8 fade-in">
+                <h2 class="font-heading text-4xl text-pink-500 text-center mb-8">Chọn bố cục ảnh</h2>
+                <div id="layoutSelection" class="grid grid-cols-2 md:grid-cols-4 gap-6"></div>
+                <div class="text-center mt-12 ">
+                    <button onclick="showScreen('captureScreen')" class="px-8 py-4 bg-pink-500 text-white font-bold rounded-full text-2xl shadow-lg hover:bg-pink-600 transition-transform transform hover:scale-105">Vào phòng chụp!</button>
+                    <button onclick="showScreen('homeScreen')" class="mt-4 ml-6 text-gray-500 hover:text-pink-500">Quay lại</button>
+                </div>
             </div>
         </div>
 
-        <div class="controls">
-            <div id="dice" class="dice">
-    <div class="dice-face face-1">1</div>
-    <div class="dice-face face-2">2</div>
-    <div class="dice-face face-3">3</div>
-    <div class="dice-face face-4">4</div>
-    <div class="dice-face face-5">5</div>
-    <div class="dice-face face-6">6</div>
-</div>
-            <button id="rollDiceBtn" class="roll-button">Tung Xúc Xắc</button>
+        <div id="captureScreen" class="hidden min-h-screen flex flex-col items-center justify-center p-4">
+             <div class="w-full max-w-5xl bg-white rounded-2xl shadow-xl p-6 relative fade-in">
+                <div id="videoContainer" class="relative border-4 border-pink-200">
+                    <video id="video" autoplay playsinline></video>
+                    <div id="countdownOverlay" class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white font-bold text-9xl" style="display: none;"></div>
+                    <div id="flashEffect" class="absolute inset-0 bg-white opacity-0 pointer-events-none"></div>
+                </div>
+                <div id="captureProgress" class="absolute top-8 left-8 bg-black bg-opacity-50 text-white text-xl font-bold px-4 py-2 rounded-full"></div>
+             </div>
+             <div class="mt-6 text-center">
+                 <div class="mb-4">
+                     <span class="font-bold text-lg mr-4">Thời gian đếm ngược:</span>
+                     <button onclick="setTimer(3)" class="timer-btn px-4 py-2 border-2 border-pink-200 rounded-full font-bold text-pink-500 mr-3">3s</button>
+                     <button onclick="setTimer(5)" class="timer-btn px-4 py-2 border-2 border-pink-200 rounded-full font-bold text-pink-500 active  mr-3">5s</button>
+                     <button onclick="setTimer(10)" class="timer-btn px-4 py-2 border-2 border-pink-200 rounded-full font-bold text-pink-500  mr-3">10s</button>
+                 </div>
+                 <button id="startCaptureBtn" class="px-8 py-4 bg-pink-500 text-white font-bold rounded-full text-2xl shadow-lg hover:bg-pink-600 transition-transform transform hover:scale-105">Bắt đầu</button>
+             </div>
+             <button onclick="showScreen('settingsScreen')" class="mt-4 text-gray-500 hover:text-pink-500">Chọn lại bố cục</button>
         </div>
-    </div>
+        
+        <!-- <div id="editScreen" class="hidden p-6">
+             <div class="max-w-6xl mx-auto flex flex-col lg:flex-row gap-8 fade-in">
+                <div class="edit-preview-container">
+                    <canvas id="finalCanvasPreview"></canvas>
+                </div>
+                <div class="w-full lg:w-96 bg-white rounded-2xl shadow-xl p-6">
+                    <h3 class="font-heading text-3xl text-pink-500 mb-4">Hoàn thiện ảnh</h3>
+                    <div class="mb-6"><h4 class="font-bold text-lg mb-2">1. Chọn khung ảnh</h4><div id="frameSelection" class="grid grid-cols-3 gap-3"></div></div>
+                    <div class="mb-6"><h4 class="font-bold text-lg mb-2">2. Chọn bộ lọc màu</h4><div id="filterContainer" class="grid grid-cols-3 gap-2"></div></div>
+                    <div class="flex flex-col gap-3">
+                        <button onclick="saveImage()" class="w-full px-6 py-3 bg-pink-500 text-white font-bold rounded-full text-lg shadow-lg hover:bg-pink-600 transition-transform transform hover:scale-105">Lưu ảnh</button>
+                        <button onclick="publishImage()" class="w-full px-6 py-3 bg-green-500 text-white font-bold rounded-full text-lg shadow-lg hover:bg-green-600 transition-transform transform hover:scale-105">Đăng công khai</button>
+                        <button onclick="showScreen('settingsScreen')" class="w-full text-gray-500 hover:text-pink-500 pt-2">Chụp lại</button>
+                    </div>
+                </div>
+             </div>
+        </div> -->
 
-    <div id="giftModal" class="modal">
-        <div class="modal-content">
-            <span class="close-button">&times;</span>
-            <div id="modalIcon" class="modal-icon">🎁</div>
-            <h2 id="modalTitle">Phần quà đặc biệt!</h2>
-            <p id="modalMessage">Nội dung quà tặng...</p>
+         <div id="editScreen" class="min-h-screen p-6 hidden">
+             <div class="max-w-6xl mx-auto flex flex-col lg:flex-row gap-8 fade-in">
+                 <div class="flex-grow bg-white rounded-2xl shadow-xl p-4 flex items-center justify-center min-h-[70vh]">
+                     <canvas id="finalCanvasPreview" ></canvas>
+                 </div>
+                 <div class="w-full lg:w-96 bg-white rounded-2xl shadow-xl p-6">
+                     <h3 class="font-heading text-3xl text-pink-500 mb-4">Hoàn thiện ảnh</h3>
+                     <div class="mb-6">
+                         <h4 class="font-bold text-lg mb-2">1. Chọn khung ảnh</h4>
+                         <div id="frameSelection" class="grid grid-cols-3 gap-3"></div>
+                     </div>
+                     <div class="mb-6">
+                         <h4 class="font-bold text-lg mb-2">2. Chọn bộ lọc màu</h4>
+                         <div id="filterContainer" class="grid grid-cols-3 gap-2"></div>
+                     </div>
+                     <div class="flex flex-col gap-3">
+                         <button onclick="saveImage()" class="w-full px-6 py-3 bg-pink-500 text-white font-bold rounded-full text-lg shadow-lg hover:bg-pink-600 transition-transform transform hover:scale-105">Lưu ảnh</button>
+                         <button onclick="publishImage()" class="w-full px-6 py-3 bg-green-500 text-white font-bold rounded-full text-lg shadow-lg hover:bg-green-600 transition-transform transform hover:scale-105">Đăng công khai</button>
+                         <button onclick="showScreen('settingsScreen')" class="w-full text-gray-500 hover:text-pink-500 pt-2">Chụp lại</button>
+                     </div>
+                 </div>
+             </div>
         </div>
-    </div>
-<div id="photoboothModal" class="modal">
-    <div class="photobooth-container">
 
-     <div class="photobooth-container">
-
-    <div id="startScreen">
-        <h2 class="photobooth-title">Chụp Photobooth Kỷ Niệm Nhá!</h2>
-        <p>Hãy chuẩn bị 4 kiểu dáng thật xinh nhé!</p>
-        <button id="startCaptureBtn" class="photobooth-button">Bắt đầu chụp</button>
-    </div>
-
-    <div id="cameraScreen" style="display: none;">
-        <div class="video-wrapper">
-            <video id="photoboothVideo" autoplay playsinline></video>
-            <div id="countdownOverlay" class="countdown-overlay"></div>
-            <div id="flashEffect" class="flash-effect"></div> </div>
-        <button id="captureBtn" class="photobooth-button">Chụp</button>
-    </div>
-
-    <div id="reviewScreen" style="display: none;">
-        <h2 class="photobooth-title">Xem lại ảnh của bạn!</h2>
-        <div id="photoPreviews" class="photo-previews">
+        <div id="galleryScreen" class="hidden">
+            <div class="gallery-header">
+                <div class="gallery-controls">
+                    <button onclick="showScreen('homeScreen')" class="gallery-back-btn">&larr; Quay lại</button>
+                    <h2 class="font-heading text-4xl text-pink-500 text-center">Thư viện công khai</h2>
+                    <div class="gallery-zoom-controls">
+                        <span class="font-bold hidden sm:inline"></span>
+                    </div>
+                </div>
+                <div class="gallery-divider"></div> 
             </div>
-        <div class="review-buttons">
-            <button id="confirmPhotosBtn" class="photobooth-button">Ghép ảnh!</button>
-            <button id="retakeAllBtn" class="photobooth-button secondary">Chụp lại tất cả</button>
-        </div>
-    </div>
-
-    <div id="resultScreen" style="display: none;">
-        <div class="final-photo-wrapper">
-            <div class="photo-frame">
-                <canvas id="finalCanvas" class="hidden-canvas"></canvas> </div>
-            <div class="final-message">
-                <h3>Gửi em, cô gái đang tự lực cố gắng ở nơi xa </h3>
-                <p>20/10 này, anh chẳng có gì nhiều, cũng chẳng thể làm được gì, chỉ muốn gửi đến em một vài lời chúc đủ dịu dàng để động viên an ủi và đủ mạnh mẽ để tiếp thêm niềm tin cho em.
-                    Chúc em – cô gái đang học xa nhà, dù phải tự mình vượt qua biết bao áp lực và nỗi nhớ, vẫn luôn giữ được nụ cười rạng rỡ trên môi, tỏa sáng như ánh nắng đầu ngày. Anh biết cuộc sống này mệt mỏi lắm chứ, nó bào mòn mài dũa chúng ta mà, vì vậy không có con đường nào là dễ dàng, nên mong rằng em hãy tin mọi cố gắng của em hôm nay đều đang dẫn lối cho một tương lai thật đẹp phía trước, đưa những ước mơ mong muốn đến gần với em hơn. Đây là hành trình em chọn, em nỗ lực để có được nó, vì vậy em phải tự hào về hành trình này nhá, và để đạt những thứ lớn hơn phải đánh đổi những điều khác, nên là mong em sẽ ít tủi thân về việc mình không được gần gia đình, đôi khi phải xa gia đình vậy mới là điều tốt mà, vì nếu không có như vậy, thì đã không có một Tường Vi mạnh mẽ, xinh đẹp như ngày hôm nay, thật sự em rất đẹp, đẹp nhất thế gian này. Xa nhà là hành trình của trưởng thành, và em đã làm rất tốt rồi. Hãy cho phép bản thân được nghỉ ngơi một chút, hít thật sâu, và mỉm cười thật tươi nhé
-                </p>
-                <p>Chúc em không chỉ có một ngày 20/10 hạnh phúc, mà là mỗi ngày đều tìm thấy niềm vui nhỏ bé: trong một tách cà phê buổi sáng, hay đơn giản là cảm giác “mình vẫn đang cố gắng mỗi ngày”. Anh vẫn luôn ở đây và sẵn sàng giúp đỡ mỗi khi em cần, vì thế cho dù ở thành phố rộng lớn, Ngò vẫn không cô đơn đâu</p>
-                <p>Chúc em luôn mạnh mẽ, luôn xinh đẹp, và luôn hạnh phúc theo cách của riêng mình.</p>
+            <div id="galleryGridContainer"> 
+                <div id="galleryGrid"></div>
             </div>
         </div>
-        <button id="saveBtn" class="photobooth-button">Lưu ảnh</button> <button id="closePhotoboothBtn" class="photobooth-button secondary">Đóng</button>
-    </div>
 
-</div>
-<canvas id="hiddenCanvas" class="hidden-canvas"></canvas>
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-    <script src="script.js"></script>
+        <canvas id="hiddenCanvas" class="hidden"></canvas>
+        <div id="loadingOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center">
+            <div class="bg-white text-pink-500 font-bold p-6 rounded-2xl shadow-xl flex items-center gap-4">
+                <svg class="animate-spin h-8 w-8 text-pink-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                <span>Đang xử lý...</span>
+            </div>
+        </div>
+        <div id="lightboxOverlay" class="fixed inset-0 bg-black bg-opacity-70 z-[100] hidden items-center justify-center p-4">
+            <span id="closeLightbox" class="absolute top-4 right-6 text-white text-5xl font-bold cursor-pointer hover:opacity-75">&times;</span>
+            <img id="lightboxImage" src="" class="max-w-[95vw] max-h-[95vh] object-contain rounded-lg shadow-2xl" alt="Ảnh phóng to">
+        </div>
+    </div>
+    
+ <script type="module" src="script.js"></script>
+ <footer id="pageFooter" class="w-full bg-white border-t-2 border-pink-100 mt-16 p-8 md:p-12">
+    <div class="max-w-6xl mx-auto">
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+            
+            <div class="mb-6 md:mb-0">
+                <img src="solvia.png" alt="Logo thương hiệu Solvia" class="mb-4 h-12 w-auto">
+                <h3 class="font-heading text-4xl text-pink-500">Photobooth Solvia</h3>
+                <p class="mt-2 text-gray-600">Ghi lại những khoảnh khắc đáng yêu của bạn!</p>
+                
+            </div>
+            
+            <div>
+                <h4 class="text-xl font-bold text-gray-800 mb-4">Thông tin liên hệ</h4>
+                <ul class="space-y-3">
+                    
+                    <li class="flex items-center gap-3">
+                        <svg class="w-6 h-6 text-pink-500 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.211-.998-.552-1.348l-2.67-2.67a2.25 2.25 0 00-3.182 0l-1.17 1.17-3.42-3.42 1.17-1.17a2.25 2.25 0 000-3.182l-2.67-2.67A2.25 2.25 0 006.12 3v1.372c0 .516.211.998.552 1.348H2.25z" /></svg>
+                        <a href="tel:0905123456" class="text-gray-600 hover:text-pink-500 font-medium">
+                            0325881887 </a>
+                    </li>
+                    
+                    <li class="flex items-center gap-3">
+                        <svg class="w-6 h-6 text-pink-500 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
+                        <a href="mailto: thiensinh3407@gmail.com" class="text-gray-600 hover:text-pink-500 font-medium">
+                            thiensinh3407@gmail.com </a>
+                    </li>
+                    
+                    <li class="flex items-center gap-3">
+                        <svg class="w-6 h-6 text-pink-500 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9 9 0 100-18 9 9 0 000 18z" /></svg>
+                        <a href="https://facebook.com/SoviaPhotobooth" target="_blank" class="text-gray-600 hover:text-pink-500 font-medium">
+                            fb.com/SolviaPhotobooth </a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+        
+        <hr class="my-6 border-pink-100">
+        
+        <div class="flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+            <p class="mb-4 md:mb-0">
+                &copy; 2025 Photobooth Solvia. Người sáng tạo: 
+                <span class="font-bold text-gray-600">Huỳnh Văn Thiên Sinh</span> </p>
+            <p>
+                Đã đăng ký bản quyền.
+            </p>
+        </div>
+        
+    </div>
+</footer>
+
 </body>
 </html>
