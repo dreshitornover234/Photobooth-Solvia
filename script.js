@@ -1,14 +1,7 @@
-
-// =================================================================
-// PHOTOBOUTH SOlVIA 2.0 - Full script with Firebase Storage + Firestore
-// =================================================================
-
 // ----------------- FIREBASE (IMPORT + INIT) -----------------------
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
 import { getStorage, ref as sRef, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
 import { getFirestore, collection, addDoc, query, orderBy, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
-
-// ---------- THAY BẰNG CẤU HÌNH FIREBASE CỦA BẠN -------------
 const firebaseConfig = {
   apiKey: "AIzaSyDhTpzZw4kWvlNjPag1CguFmQy-XoRQl_4",
     authDomain: "chat-3407.firebaseapp.com",
@@ -20,7 +13,7 @@ const firebaseConfig = {
     measurementId: "G-X3EL784VPT"
 };
 
-// Khởi tạo Firebase (try/catch để không crash nếu chưa cấu hình)
+// Khởi tạo Firebase
 let storage = null, db = null;
 try {
   const app = initializeApp(firebaseConfig);
@@ -30,8 +23,6 @@ try {
 } catch (err) {
   console.warn("Firebase initialization failed or not configured. Falling back to localStorage. Error:", err);
 }
-
-// Helper: upload base64 dataURL -> Firebase Storage
 async function uploadImageToStorage(base64DataUrl, storagePath) {
   if (!storage) throw new Error("Firebase Storage not initialized");
   const ref = sRef(storage, storagePath);
@@ -39,8 +30,6 @@ async function uploadImageToStorage(base64DataUrl, storagePath) {
   const url = await getDownloadURL(ref);
   return { url, fullPath: ref.fullPath };
 }
-
-// Helper: add metadata to Firestore
 async function addGalleryRecordToFirestore({ storagePath, downloadURL, layout }) {
   if (!db) throw new Error("Firestore not initialized");
   const col = collection(db, 'solviaGallery');
@@ -52,8 +41,6 @@ async function addGalleryRecordToFirestore({ storagePath, downloadURL, layout })
   });
   return doc.id;
 }
-
-// Helper: fetch gallery from Firestore
 async function fetchGalleryFromFirestore() {
   if (!db) throw new Error("Firestore not initialized");
   const col = collection(db, 'solviaGallery');
@@ -70,8 +57,6 @@ async function fetchGalleryFromFirestore() {
   });
   return items;
 }
-
-// Expose firebase helpers for debug if needed
 window.__firebaseHelpers = {
   uploadImageToStorage,
   addGalleryRecordToFirestore,
@@ -79,8 +64,6 @@ window.__firebaseHelpers = {
   storageInitialized: !!storage,
   firestoreInitialized: !!db
 };
-
-// ----------------- APPLICATION STATE -----------------------------
 const state = {
     currentScreen: 'homeScreen',
     settings: {
@@ -118,7 +101,6 @@ const lightboxOverlay = document.getElementById('lightboxOverlay');
 const lightboxImage = document.getElementById('lightboxImage');
 const closeLightbox = document.getElementById('closeLightbox');
 
-// ----------------- NAVIGATION -----------------------------
 async function showScreen(screenId) {
     console.log(`Chuyển màn hình sang: ${screenId}`);
     window.showScreen = showScreen;
@@ -139,8 +121,6 @@ async function showScreen(screenId) {
     if (screenId === 'captureScreen') startCamera();
     if (screenId === 'galleryScreen') await initGallery();
 }
-
-// ----------------- CONFIG DATA -----------------------------
 const layouts = [
   { id: '1_PHOTO', name: '1 Ảnh đơn', count: 1 },
   { id: '4_VERTICAL', name: '4 Ảnh dọc', count: 4 },
@@ -157,7 +137,6 @@ const filters = [
   { id: 'vibrant', name: 'Rực rỡ' }, { id: 'mono', name: 'Đơn sắc' }, { id: 'dreamy', name: 'Mơ màng' }
 ];
 
-// ----------------- UI INIT -----------------------------
 function initializeUI() {
     console.log("Khởi tạo UI...");
     const layoutContainer = document.getElementById('layoutSelection');
@@ -188,8 +167,6 @@ function initializeUI() {
     }
     console.log("Khởi tạo UI xong.");
 }
-
-// ----------------- PHOTOBOOTH -----------------------------
 async function startCamera() {
     state.settings.layout = document.querySelector('input[name="layout"]:checked').value;
     state.capturedPhotos = [];
@@ -241,15 +218,13 @@ function capturePhoto(index) {
     state.capturedPhotos.push(hiddenCanvas.toDataURL('image/jpeg'));
     setTimeout(() => { if (flashEffect) flashEffect.classList.remove('flash'); if (videoContainer) videoContainer.classList.remove('capturing'); runCaptureSequence(index + 1); }, 500);
 }
-
-// ----------------- EDIT & FINALIZE -----------------------------
 async function processAndEdit() {
     loadingOverlay.classList.remove('hidden'); showScreen('editScreen');
     const frameContainer = document.getElementById('frameSelection');
     frameContainer.innerHTML = '';
     frames.forEach((frame, index) => {
         const isChecked = index === 0 ? 'checked' : '';
-        // onchange sử dụng redrawFinalImage() — hàm sẽ được expose ra window ở cuối file
+  
         frameContainer.innerHTML += `<label class="cursor-pointer"><input type="radio" name="frame" value="${frame.id}" class="sr-only" ${isChecked} onchange="redrawFinalImage()"><div class="p-2 border-4 border-gray-200 rounded-xl has-[:checked]:border-pink-500 text-center"><p class="font-bold text-sm">${frame.name}</p></div></label>`;
     });
     const filterContainer = document.getElementById('filterContainer');
@@ -274,7 +249,7 @@ async function redrawFinalImage() {
     await applyFilter(activeFilterId, true);
     loadingOverlay.classList.add('hidden');
 }
-// Expose redrawFinalImage for inline onchange handler
+
 window.redrawFinalImage = redrawFinalImage;
 
 async function applyFilter(filterId, isRedrawing = false) {
@@ -391,7 +366,7 @@ async function drawGenericFrame(canvas, photos, layoutId, frameId) {
 
 // ----------------- SAVE & PUBLISH -----------------------------
 function saveImage() { const link = document.createElement('a'); link.download = 'photobooth-solvia.jpg'; link.href = finalCanvas.toDataURL('image/jpeg', 0.9); link.click(); }
-// Expose saveImage for potential inline handlers
+
 window.saveImage = saveImage;
 
 async function publishImage() {
@@ -400,7 +375,6 @@ async function publishImage() {
         const ts = Date.now();
         const storagePath = `solviaGallery/${ts}.jpg`;
 
-        // Fallback: nếu Firebase không khởi tạo -> lưu localStorage
         if (!storage || !db) {
             let gallery = JSON.parse(localStorage.getItem('solviaGallery') || '[]');
             gallery.unshift({ id: ts, src: imageData, layout: state.settings.layout });
@@ -436,10 +410,8 @@ async function publishImage() {
         await showScreen('galleryScreen');
     }
 }
-// Expose publishImage globally if needed by UI
-window.publishImage = publishImage;
 
-// ----------------- GALLERY (pan/zoom/loaded from Firestore or local) -----------------------------
+window.publishImage = publishImage;
 let animationFrameId = null;
 
 async function initGallery() {
@@ -484,7 +456,6 @@ async function loadGallery() {
 
     let galleryData = [];
 
-    // Nếu Firestore có sẵn -> lấy từ Firestore
     if (db) {
         try {
             galleryData = await fetchGalleryFromFirestore();
@@ -568,7 +539,7 @@ async function loadGallery() {
     console.log("loadGallery xong.");
 }
 
-// ----------------- PAN & ZOOM -----------------------------
+// ----------------- ZOOM -----------------------------
 function handleZoom(e) {
     e.preventDefault();
     const { gallery } = state;
@@ -660,7 +631,7 @@ function handlePanEnd(e) {
     screens.gallery.classList.remove('panning');
 }
 
-// ----------------- LIGHTBOX -----------------------------
+
 function openLightbox(src) {
    console.log("Đang mở Lightbox với src:", src);
    lightboxImage.src = src;
@@ -693,10 +664,10 @@ function scrollToFooter() {
     const footerElement = document.getElementById('pageFooter');
 
     if (footerElement) {
-        // Cuộn mượt mà tới cái footer
+      
         footerElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else {
-        // Nếu không tìm thấy footer, cuộn xuống đáy trang
+     
         window.scrollTo({
             top: document.body.scrollHeight,
             behavior: 'smooth'
