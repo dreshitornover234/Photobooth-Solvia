@@ -163,7 +163,7 @@ const frames = [
             '4_VERTICAL': 'noen1.png', 
             '4_GRID': 'noen14lanh.png',
             // Nếu bạn thiết kế khung cho lưới dọc thì thêm vào đây
-            '4_GRID_V': 'khung_tet_4_luoi_doc.png', 
+            '4_GRID_V': 'noen14lanhdoc.png', 
             '8_VERTICAL': 'noen18anh.png'
         }
     },
