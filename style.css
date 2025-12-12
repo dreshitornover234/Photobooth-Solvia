@@ -70,6 +70,11 @@ body { font-family: var(--font-body); background-color: var(--background); overf
 
 #galleryScreen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; overflow: hidden; cursor: grab; background-color: var(--background); }
 #galleryScreen.panning { cursor: grabbing; }
+#galleryScreen {
+    touch-action: none; /* QUAN TRỌNG: Ngăn chặn zoom toàn trang */
+    user-select: none;  /* Ngăn chặn bôi đen ảnh khi ấn giữ lâu */
+    -webkit-user-select: none;
+}
 
 #galleryGridContainer {
     width: 100%;
@@ -161,4 +166,65 @@ body { font-family: var(--font-body); background-color: var(--background); overf
         transform: scale(1.03);
         box-shadow: 0 0 30px 10px rgba(236, 72, 153, 0.8);
     }
+}
+/* --- MOBILE RESPONSIVE FIXES --- */
+
+/* Chặn hành vi zoom/kéo mặc định của trình duyệt tại trang Gallery 
+
+/* Điều chỉnh giao diện cho màn hình nhỏ (dưới 768px) */
+@media (max-width: 768px) {
+    
+    /* Màn hình chính */
+    h1.font-heading { font-size: 3rem !important; } /* Tên Solvia nhỏ lại chút */
+    
+    /* Các nút bấm to ra để dễ chạm */
+    button { 
+        padding: 1rem 1.5rem !important; 
+        font-size: 1.1rem !important;
+    }
+
+    /* Màn hình chụp */
+    #videoContainer {
+        border-width: 2px !important;
+    }
+    
+    /* Layout chọn khung: Chuyển về 2 cột thay vì 4 cột */
+    #layoutSelection, #frameSelection {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 1rem !important;
+    }
+
+    /* Phần chỉnh sửa ảnh */
+    .edit-preview-container {
+        min-height: 50vh !important; /* Giảm chiều cao preview để nhường chỗ cho nút */
+        padding: 0.5rem !important;
+    }
+    
+    /* Nút đóng Lightbox to hơn */
+    #closeLightbox {
+        top: 20px;
+        right: 20px;
+        font-size: 4rem;
+        padding: 10px;
+        line-height: 1;
+        z-index: 101;
+    }
+}
+/* --- Vertical Camera Mode (Cho bố cục 4 Lưới Dọc) --- */
+#videoContainer.vertical-mode {
+    aspect-ratio: 2 / 3 !important; /* Đổi tỷ lệ thành dọc */
+    max-width: 300px; /* Giới hạn chiều rộng để không bị to quá trên màn hình PC */
+    margin: 0 auto; /* Căn giữa */
+}
+
+/* Tùy chỉnh icon preview cho bố cục mới */
+.preview-4_GRID_V { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 4px; 
+    width: 80px; /* Nhỏ hơn chút vì nó cao */
+}
+.preview-4_GRID_V .photo { 
+    width: 100%; 
+    aspect-ratio: 2 / 3; /* Ảnh con bên trong cũng dọc */
 }
