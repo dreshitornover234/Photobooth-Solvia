@@ -79,6 +79,8 @@ const state = {
     },
     capturedPhotos: [],
     stream: null,
+    // [MỚI] Thêm trạng thái camera (user: trước, environment: sau)
+    cameraFacingMode: 'user', 
     gallery: {
         scale: 0.5, panX: 0, panY: 0,
         targetScale: 0.5, targetPanX: 0, targetPanY: 0,
@@ -111,7 +113,6 @@ async function showScreen(screenId) {
     console.log(`Chuyển màn hình sang: ${screenId}`);
     window.showScreen = showScreen;
 
-    // Dọn dẹp sự kiện cũ
     if (state.currentScreen === 'galleryScreen') {
         screens.gallery.onwheel = null;
         screens.gallery.onmousedown = null;
@@ -138,26 +139,24 @@ const layouts = [
     { id: '1_PHOTO', name: '1 Ảnh đơn', count: 1 },
     { id: '4_VERTICAL', name: '4 Ảnh dọc', count: 4 },
     { id: '4_GRID', name: '4 Ảnh lưới', count: 4 },
-    // [MỚI] Thêm bố cục lưới dọc
     { id: '4_GRID_V', name: '4 Lưới Dọc', count: 4 }, 
     { id: '8_VERTICAL', name: '8 Ảnh (2 dải)', count: 8 },
 ];
 
 const frames = [
-    { id: 'classic_pink', name: 'Hồng cổ điển' }, 
-    { id: 'polaroid', name: 'Polaroid' }, 
-    { id: 'film_strip', name: 'Dải phim' },
-    { id: 'neon_pink', name: 'Hồng Neon' }, 
-    { id: 'sunset_orange', name: 'Cam hoàng hôn' }, 
-    { id: 'dreamy_purple', name: 'Tím mộng mơ' },
-    { id: 'confetti', name: 'Pháo hoa giấy' }, 
-    { id: 'starlight', name: 'Bầu trời sao' }, 
-    { id: 'minimalist', name: 'Tối giản' },
+    { id: 'classic_pink', name: 'Khung hồng' }, 
+    { id: 'polaroid', name: 'Khung kem' }, 
+    { id: 'film_strip', name: 'Khung tối' },
+    { id: 'neon_pink', name: 'Khung viền hồng neon' }, 
+    { id: 'sunset_orange', name: 'Khung cam' }, 
+    { id: 'dreamy_purple', name: 'Khung tím' },
+    { id: 'starlight', name: 'Khung tối chấm trắng' }, 
+    { id: 'minimalist', name: 'Tối trắng' },
 
-    // --------Khung ảnh mới (PNG Overlay) ---------
+    // --------Khung ảnh mới ---------
     {
-        id: 'tet_2025',      
-        name: 'Tết Ất Tỵ',   
+        id: 'noen',      
+        name: 'Noen 1',   
         type: 'image',       
         src: {
             '1_PHOTO': 'noen11anh.png',
@@ -173,12 +172,11 @@ const frames = [
         name: 'Hello Kitty',   
         type: 'image',       
         src: {
-            '1_PHOTO': 'noen11anh.png',
-            '4_VERTICAL': 'noen1.png', 
-            '4_GRID': 'noen14lanh.png',
-            // Nếu bạn thiết kế khung cho lưới dọc thì thêm vào đây
+            '1_PHOTO': 'khung_tet_1_don.png',
+            '4_VERTICAL': 'hellokitty14anh.png', 
+            '4_GRID': 'khung_tet_4_luoi.png',
             '4_GRID_V': 'hellokitty1.png', 
-            '8_VERTICAL': 'noen18anh.png'
+            '8_VERTICAL': 'khung_tet_8_doc.png'
         }
     }
 ];
@@ -199,7 +197,6 @@ function initializeUI() {
             case '1_PHOTO': previewHTML = `<div class="layout-preview preview-1_PHOTO"><div class="photo"></div></div>`; break;
             case '4_VERTICAL': previewHTML = `<div class="layout-preview preview-4_VERTICAL"><div class="photo"></div><div class="photo"></div><div class="photo"></div><div class="photo"></div></div>`; break;
             case '4_GRID': previewHTML = `<div class="layout-preview preview-4_GRID"><div class="photo"></div><div class="photo"></div><div class="photo"></div><div class="photo"></div></div>`; break;
-            // [MỚI] Preview cho lưới dọc
             case '4_GRID_V': previewHTML = `<div class="layout-preview preview-4_GRID_V"><div class="photo"></div><div class="photo"></div><div class="photo"></div><div class="photo"></div></div>`; break;
             case '8_VERTICAL': previewHTML = `<div class="layout-preview preview-8_VERTICAL"><div class="strip"><div class="photo"></div><div class="photo"></div><div class="photo"></div><div class="photo"></div></div><div class="strip"><div class="photo"></div><div class="photo"></div><div class="photo"></div><div class="photo"></div></div></div>`; break;
         }
@@ -221,13 +218,20 @@ function initializeUI() {
     console.log("Khởi tạo UI xong.");
 }
 
+// [MỚI] Hàm xoay camera
+async function toggleCamera() {
+    state.cameraFacingMode = (state.cameraFacingMode === 'user') ? 'environment' : 'user';
+    await startCamera();
+}
+window.toggleCamera = toggleCamera;
+
 async function startCamera() {
     state.settings.layout = document.querySelector('input[name="layout"]:checked').value;
     state.capturedPhotos = [];
     const startBtn = document.getElementById('startCaptureBtn');
     if (startBtn) startBtn.disabled = false;
 
-    // [MỚI] Kiểm tra nếu là bố cục Lưới Dọc thì thêm class CSS để xoay khung camera
+    // Logic xoay khung camera dọc
     if (state.settings.layout === '4_GRID_V') {
         videoContainer.classList.add('vertical-mode');
     } else {
@@ -236,9 +240,26 @@ async function startCamera() {
 
     try {
         if (state.stream) state.stream.getTracks().forEach(track => track.stop());
-        const constraints = { video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' }, audio: false };
+        
+        // [MỚI] Dùng biến cameraFacingMode thay vì fix cứng 'user'
+        const constraints = { 
+            video: { 
+                width: { ideal: 1280 }, 
+                height: { ideal: 720 }, 
+                facingMode: state.cameraFacingMode 
+            }, 
+            audio: false 
+        };
         state.stream = await navigator.mediaDevices.getUserMedia(constraints);
         videoEl.srcObject = state.stream;
+        
+        // [MỚI] Xử lý lật video (Mirror): Cam trước thì lật, Cam sau thì không
+        if (state.cameraFacingMode === 'user') {
+            videoEl.style.transform = 'scaleX(-1)';
+        } else {
+            videoEl.style.transform = 'none';
+        }
+
         await videoEl.play();
     } catch (err) { console.error("Camera error:", err); alert("Không thể truy cập camera. Vui lòng cấp quyền và thử lại."); showScreen('settingsScreen'); }
 }
@@ -269,8 +290,6 @@ function capturePhoto(index) {
     const context = hiddenCanvas.getContext('2d');
     const video = videoEl;
 
-    // [MỚI] Xác định tỷ lệ ảnh dựa trên bố cục
-    // Nếu là Lưới Dọc (4_GRID_V) -> Tỷ lệ 2/3 (Dọc). Các bố cục khác -> 3/2 (Ngang)
     const isVerticalLayout = state.settings.layout === '4_GRID_V';
     const targetAspectRatio = isVerticalLayout ? (2 / 3) : (3 / 2);
 
@@ -290,7 +309,16 @@ function capturePhoto(index) {
         sY = (videoHeight - sHeight) / 2; 
     }
     hiddenCanvas.width = sWidth; hiddenCanvas.height = sHeight;
-    context.translate(sWidth, 0); context.scale(-1, 1);
+    
+    // [MỚI] Xử lý lật ảnh khi chụp (Canvas Mirror)
+    // Nếu cam trước -> Lật (-1, 1). Nếu cam sau -> Giữ nguyên (1, 1)
+    if (state.cameraFacingMode === 'user') {
+        context.translate(sWidth, 0); 
+        context.scale(-1, 1);
+    } else {
+        context.setTransform(1, 0, 0, 1, 0, 0); // Reset transform
+    }
+
     context.drawImage(video, sX, sY, sWidth, sHeight, 0, 0, sWidth, sHeight);
     state.capturedPhotos.push(hiddenCanvas.toDataURL('image/jpeg'));
     setTimeout(() => { if (flashEffect) flashEffect.classList.remove('flash'); if (videoContainer) videoContainer.classList.remove('capturing'); runCaptureSequence(index + 1); }, 500);
@@ -338,9 +366,6 @@ async function applyFilter(filterId) {
 async function drawGenericFrame(canvas, photos, layoutId, frameId, filterId = 'none') {
     const ctx = canvas.getContext('2d');
 
-    // --- CẤU HÌNH KÍCH THƯỚC (QUAN TRỌNG) ---
-    // [MỚI] Nếu là bố cục Lưới Dọc thì kích thước ảnh con là 600x900 (Dọc)
-    // Các bố cục khác vẫn là 900x600 (Ngang)
     const isVerticalLayout = layoutId === '4_GRID_V';
     const P_W = isVerticalLayout ? 600 : 900;
     const P_H = isVerticalLayout ? 900 : 600;
@@ -353,7 +378,6 @@ async function drawGenericFrame(canvas, photos, layoutId, frameId, filterId = 'n
         case '1_PHOTO': photoGridCols = 1; photoGridRows = 1; break;
         case '4_VERTICAL': photoGridCols = 1; photoGridRows = 4; break;
         case '4_GRID': photoGridCols = 2; photoGridRows = 2; break;
-        // [MỚI] Cấu hình cho lưới dọc
         case '4_GRID_V': photoGridCols = 2; photoGridRows = 2; break; 
         case '8_VERTICAL': photoGridCols = 2; photoGridRows = 4; break;
         default: photoGridCols = 1; photoGridRows = 1;
