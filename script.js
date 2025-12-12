@@ -111,19 +111,15 @@ async function showScreen(screenId) {
     console.log(`Chuyển màn hình sang: ${screenId}`);
     window.showScreen = showScreen;
 
-    // [SỬA LỖI] Cập nhật phần dọn dẹp sự kiện cho khớp với code mới
+    // Dọn dẹp sự kiện cũ
     if (state.currentScreen === 'galleryScreen') {
-        // Xóa sự kiện bằng cách gán null (vì dùng onEvent)
         screens.gallery.onwheel = null;
         screens.gallery.onmousedown = null;
         window.onmousemove = null;
         window.onmouseup = null;
-
-        // Xóa sự kiện cảm ứng Mobile
         screens.gallery.ontouchstart = null;
         screens.gallery.ontouchmove = null;
         screens.gallery.ontouchend = null;
-
         if (animationFrameId) cancelAnimationFrame(animationFrameId);
     }
 
@@ -142,28 +138,46 @@ const layouts = [
     { id: '1_PHOTO', name: '1 Ảnh đơn', count: 1 },
     { id: '4_VERTICAL', name: '4 Ảnh dọc', count: 4 },
     { id: '4_GRID', name: '4 Ảnh lưới', count: 4 },
+    // [MỚI] Thêm bố cục lưới dọc
+    { id: '4_GRID_V', name: '4 Lưới Dọc', count: 4 }, 
     { id: '8_VERTICAL', name: '8 Ảnh (2 dải)', count: 8 },
 ];
 
 const frames = [
-    { id: 'classic_pink', name: 'Khung hồng' }, 
-    { id: 'polaroid', name: 'Khung kem' }, 
-    { id: 'film_strip', name: 'Khung tối' },
-    { id: 'neon_pink', name: 'Khung viền Neon' }, 
-    { id: 'sunset_orange', name: 'Khung cam' }, 
-    { id: 'dreamy_purple', name: 'Khung tím' },
-    { id: 'starlight', name: 'Khung tối đầy sao' }, 
-    { id: 'minimalist', name: 'Khung trắng' },
+    { id: 'classic_pink', name: 'Hồng cổ điển' }, 
+    { id: 'polaroid', name: 'Polaroid' }, 
+    { id: 'film_strip', name: 'Dải phim' },
+    { id: 'neon_pink', name: 'Hồng Neon' }, 
+    { id: 'sunset_orange', name: 'Cam hoàng hôn' }, 
+    { id: 'dreamy_purple', name: 'Tím mộng mơ' },
+    { id: 'confetti', name: 'Pháo hoa giấy' }, 
+    { id: 'starlight', name: 'Bầu trời sao' }, 
+    { id: 'minimalist', name: 'Tối giản' },
 
-    // --------Khung ảnh mới ---------
+    // --------Khung ảnh mới (PNG Overlay) ---------
     {
         id: 'tet_2025',      
-        name: 'Khung Noen 1',   
+        name: 'Tết Ất Tỵ',   
         type: 'image',       
         src: {
             '1_PHOTO': 'noen11anh.png',
-            '4_VERTICAL': 'noen1.png', // Tên file bạn đã đặt
+            '4_VERTICAL': 'noen1.png', 
             '4_GRID': 'noen14lanh.png',
+            // Nếu bạn thiết kế khung cho lưới dọc thì thêm vào đây
+            '4_GRID_V': 'khung_tet_4_luoi_doc.png', 
+            '8_VERTICAL': 'noen18anh.png'
+        }
+    },
+    {
+        id: 'hellokitty',      
+        name: 'Hello Kitty',   
+        type: 'image',       
+        src: {
+            '1_PHOTO': 'noen11anh.png',
+            '4_VERTICAL': 'noen1.png', 
+            '4_GRID': 'noen14lanh.png',
+            // Nếu bạn thiết kế khung cho lưới dọc thì thêm vào đây
+            '4_GRID_V': 'hellokitty1.png', 
             '8_VERTICAL': 'noen18anh.png'
         }
     }
@@ -185,6 +199,8 @@ function initializeUI() {
             case '1_PHOTO': previewHTML = `<div class="layout-preview preview-1_PHOTO"><div class="photo"></div></div>`; break;
             case '4_VERTICAL': previewHTML = `<div class="layout-preview preview-4_VERTICAL"><div class="photo"></div><div class="photo"></div><div class="photo"></div><div class="photo"></div></div>`; break;
             case '4_GRID': previewHTML = `<div class="layout-preview preview-4_GRID"><div class="photo"></div><div class="photo"></div><div class="photo"></div><div class="photo"></div></div>`; break;
+            // [MỚI] Preview cho lưới dọc
+            case '4_GRID_V': previewHTML = `<div class="layout-preview preview-4_GRID_V"><div class="photo"></div><div class="photo"></div><div class="photo"></div><div class="photo"></div></div>`; break;
             case '8_VERTICAL': previewHTML = `<div class="layout-preview preview-8_VERTICAL"><div class="strip"><div class="photo"></div><div class="photo"></div><div class="photo"></div><div class="photo"></div></div><div class="strip"><div class="photo"></div><div class="photo"></div><div class="photo"></div><div class="photo"></div></div></div>`; break;
         }
         layoutContainer.innerHTML += `<label class="cursor-pointer p-4 border-4 border-transparent rounded-xl has-[:checked]:border-pink-500 has-[:checked]:bg-pink-50 transition text-center flex flex-col items-center"><input type="radio" name="layout" value="${layout.id}" class="sr-only" ${isChecked}>${previewHTML}<p class="font-bold text-lg mt-3">${layout.name}</p></label>`;
@@ -204,11 +220,20 @@ function initializeUI() {
     }
     console.log("Khởi tạo UI xong.");
 }
+
 async function startCamera() {
     state.settings.layout = document.querySelector('input[name="layout"]:checked').value;
     state.capturedPhotos = [];
     const startBtn = document.getElementById('startCaptureBtn');
     if (startBtn) startBtn.disabled = false;
+
+    // [MỚI] Kiểm tra nếu là bố cục Lưới Dọc thì thêm class CSS để xoay khung camera
+    if (state.settings.layout === '4_GRID_V') {
+        videoContainer.classList.add('vertical-mode');
+    } else {
+        videoContainer.classList.remove('vertical-mode');
+    }
+
     try {
         if (state.stream) state.stream.getTracks().forEach(track => track.stop());
         const constraints = { video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' }, audio: false };
@@ -220,7 +245,6 @@ async function startCamera() {
 function setTimer(seconds) { state.settings.timer = seconds; document.querySelectorAll('.timer-btn').forEach(btn => btn.classList.remove('active')); event.target.classList.add('active'); }
 
 window.setTimer = setTimer;
-
 
 document.getElementById('startCaptureBtn').onclick = () => { document.getElementById('startCaptureBtn').disabled = true; runCaptureSequence(0); };
 function runCaptureSequence(index) {
@@ -237,24 +261,41 @@ function runCaptureSequence(index) {
         if (count < 0) { clearInterval(interval); countdownOverlay.style.display = 'none'; capturePhoto(index); }
     }, 1000);
 }
+
 function capturePhoto(index) {
     const flashEffect = document.getElementById('flashEffect');
     if (flashEffect) flashEffect.classList.add('flash');
     if (videoContainer) videoContainer.classList.add('capturing');
     const context = hiddenCanvas.getContext('2d');
     const video = videoEl;
-    const targetAspectRatio = 3 / 2;
+
+    // [MỚI] Xác định tỷ lệ ảnh dựa trên bố cục
+    // Nếu là Lưới Dọc (4_GRID_V) -> Tỷ lệ 2/3 (Dọc). Các bố cục khác -> 3/2 (Ngang)
+    const isVerticalLayout = state.settings.layout === '4_GRID_V';
+    const targetAspectRatio = isVerticalLayout ? (2 / 3) : (3 / 2);
+
     const videoWidth = video.videoWidth, videoHeight = video.videoHeight;
     const videoAspectRatio = videoWidth / videoHeight;
     let sX, sY, sWidth, sHeight;
-    if (videoAspectRatio > targetAspectRatio) { sHeight = videoHeight; sWidth = videoHeight * targetAspectRatio; sX = (videoWidth - sWidth) / 2; sY = 0; }
-    else { sWidth = videoWidth; sHeight = videoWidth / targetAspectRatio; sX = 0; sY = (videoHeight - sHeight) / 2; }
+
+    if (videoAspectRatio > targetAspectRatio) { 
+        sHeight = videoHeight; 
+        sWidth = videoHeight * targetAspectRatio; 
+        sX = (videoWidth - sWidth) / 2; 
+        sY = 0; 
+    } else { 
+        sWidth = videoWidth; 
+        sHeight = videoWidth / targetAspectRatio; 
+        sX = 0; 
+        sY = (videoHeight - sHeight) / 2; 
+    }
     hiddenCanvas.width = sWidth; hiddenCanvas.height = sHeight;
     context.translate(sWidth, 0); context.scale(-1, 1);
     context.drawImage(video, sX, sY, sWidth, sHeight, 0, 0, sWidth, sHeight);
     state.capturedPhotos.push(hiddenCanvas.toDataURL('image/jpeg'));
     setTimeout(() => { if (flashEffect) flashEffect.classList.remove('flash'); if (videoContainer) videoContainer.classList.remove('capturing'); runCaptureSequence(index + 1); }, 500);
 }
+
 async function processAndEdit() {
     loadingOverlay.classList.remove('hidden'); showScreen('editScreen');
     const frameContainer = document.getElementById('frameSelection');
@@ -277,6 +318,7 @@ async function processAndEdit() {
     await redrawFinalImage();
     loadingOverlay.classList.add('hidden');
 }
+
 async function redrawFinalImage() {
     loadingOverlay.classList.remove('hidden');
     state.settings.frame = document.querySelector('input[name="frame"]:checked').value;
@@ -295,7 +337,14 @@ async function applyFilter(filterId) {
 
 async function drawGenericFrame(canvas, photos, layoutId, frameId, filterId = 'none') {
     const ctx = canvas.getContext('2d');
-    const P_W = 900, P_H = 600;
+
+    // --- CẤU HÌNH KÍCH THƯỚC (QUAN TRỌNG) ---
+    // [MỚI] Nếu là bố cục Lưới Dọc thì kích thước ảnh con là 600x900 (Dọc)
+    // Các bố cục khác vẫn là 900x600 (Ngang)
+    const isVerticalLayout = layoutId === '4_GRID_V';
+    const P_W = isVerticalLayout ? 600 : 900;
+    const P_H = isVerticalLayout ? 900 : 600;
+
     const PAD = 40, SPACE = 20;
     const TOP_BANNER_HEIGHT = 120;
 
@@ -304,6 +353,8 @@ async function drawGenericFrame(canvas, photos, layoutId, frameId, filterId = 'n
         case '1_PHOTO': photoGridCols = 1; photoGridRows = 1; break;
         case '4_VERTICAL': photoGridCols = 1; photoGridRows = 4; break;
         case '4_GRID': photoGridCols = 2; photoGridRows = 2; break;
+        // [MỚI] Cấu hình cho lưới dọc
+        case '4_GRID_V': photoGridCols = 2; photoGridRows = 2; break; 
         case '8_VERTICAL': photoGridCols = 2; photoGridRows = 4; break;
         default: photoGridCols = 1; photoGridRows = 1;
     }
@@ -508,7 +559,6 @@ async function initGallery() {
         targetPanX: 0, targetPanY: 0,
     };
 
-    // Gán sự kiện (Không dùng addEventListener để dễ dọn dẹp)
     screens.gallery.onwheel = handleWheel;
     screens.gallery.onmousedown = handleMouseDown;
     window.onmousemove = handleMouseMove;
@@ -537,7 +587,6 @@ function handleWheel(e) {
     state.gallery.targetPanY += mouseY - (mouseY * (newScale / oldScale));
 }
 
-// [FIX] Xử lý chuột (Thêm kiểm tra nút bấm)
 function handleMouseDown(e) {
     if (e.target.closest('button') || e.target.closest('.gallery-controls')) return;
     touchState.isDragging = true;
@@ -568,7 +617,6 @@ function handleMouseUp(e) {
     }
 }
 
-// [FIX] Xử lý cảm ứng (Thêm kiểm tra nút bấm)
 function handleTouchStart(e) {
     if (e.target.closest('button') || e.target.closest('.gallery-controls')) return;
 
