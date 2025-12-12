@@ -53,14 +53,28 @@
                 </div>
                 <div id="captureProgress" class="absolute top-8 left-8 bg-black bg-opacity-50 text-white text-xl font-bold px-4 py-2 rounded-full"></div>
              </div>
-             <div class="mt-6 text-center">
-                 <div class="mb-4">
-                     <span class="font-bold text-lg mr-4">Thời gian đếm ngược:</span>
-                     <button onclick="setTimer(3)" class="timer-btn px-4 py-2 border-2 border-pink-200 rounded-full font-bold text-pink-500 mr-3">3s</button>
-                     <button onclick="setTimer(5)" class="timer-btn px-4 py-2 border-2 border-pink-200 rounded-full font-bold text-pink-500 active  mr-3">5s</button>
-                     <button onclick="setTimer(10)" class="timer-btn px-4 py-2 border-2 border-pink-200 rounded-full font-bold text-pink-500  mr-3">10s</button>
+           <div class="mt-6 text-center">
+                 <div class="mb-6">
+                     <span class="font-bold text-lg mr-4 block sm:inline mb-2 sm:mb-0">Thời gian đếm ngược:</span>
+                     <div class="inline-flex gap-3">
+                        <button onclick="setTimer(3)" class="timer-btn px-4 py-2 border-2 border-pink-200 rounded-full font-bold text-pink-500 hover:bg-pink-50">3s</button>
+                        <button onclick="setTimer(5)" class="timer-btn px-4 py-2 border-2 border-pink-200 rounded-full font-bold text-pink-500 active hover:bg-pink-50">5s</button>
+                        <button onclick="setTimer(10)" class="timer-btn px-4 py-2 border-2 border-pink-200 rounded-full font-bold text-pink-500 hover:bg-pink-50">10s</button>
+                     </div>
                  </div>
-                 <button id="startCaptureBtn" class="px-8 py-4 bg-pink-500 text-white font-bold rounded-full text-2xl shadow-lg hover:bg-pink-600 transition-transform transform hover:scale-105">Bắt đầu</button>
+
+                 <div class="flex flex-row items-center justify-center gap-4 sm:gap-6">
+                    <button onclick="toggleCamera()" class="w-16 h-16 sm:w-auto sm:h-auto sm:px-6 sm:py-4 bg-white border-2 border-pink-200 rounded-full shadow-lg text-pink-500 hover:bg-pink-50 transition transform active:scale-95 flex items-center justify-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8 sm:w-6 sm:h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                        </svg>
+                        <span class="font-bold text-lg hidden sm:inline">Xoay Cam</span>
+                    </button>
+
+                    <button id="startCaptureBtn" class="px-10 py-4 bg-pink-500 text-white font-bold rounded-full text-2xl shadow-lg hover:bg-pink-600 transition-transform transform hover:scale-105 flex items-center gap-2">
+                        <span>Bắt đầu</span>
+                    </button>
+                 </div>
              </div>
              <button onclick="showScreen('settingsScreen')" class="mt-4 text-gray-500 hover:text-pink-500">Chọn lại bố cục</button>
         </div>
