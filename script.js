@@ -172,11 +172,11 @@ const frames = [
         name: 'Hello Kitty',   
         type: 'image',       
         src: {
-            '1_PHOTO': 'khung_tet_1_don.png',
+            '1_PHOTO': 'hellokitty11anh.png',
             '4_VERTICAL': 'hellokitty14anh.png', 
             '4_GRID': 'hellokitty14lanh.png',
             '4_GRID_V': 'hellokitty1.png', 
-            '8_VERTICAL': 'khung_tet_8_doc.png'
+            '8_VERTICAL': 'hellokitty18anh.png'
         }
     }
 ];
