@@ -174,7 +174,7 @@ const frames = [
         src: {
             '1_PHOTO': 'khung_tet_1_don.png',
             '4_VERTICAL': 'hellokitty14anh.png', 
-            '4_GRID': 'khung_tet_4_luoi.png',
+            '4_GRID': 'hellokitty14lanh.png',
             '4_GRID_V': 'hellokitty1.png', 
             '8_VERTICAL': 'khung_tet_8_doc.png'
         }
