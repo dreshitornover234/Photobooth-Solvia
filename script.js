@@ -155,28 +155,42 @@ const frames = [
 
     // --------Khung ảnh mới ---------
     {
-        id: 'noen',      
-        name: 'Noen 1',   
-        type: 'image',       
-        src: {
-            '1_PHOTO': 'noen11anh.png',
-            '4_VERTICAL': 'noen1.png', 
-            '4_GRID': 'noen14lanh.png',
-            // Nếu bạn thiết kế khung cho lưới dọc thì thêm vào đây
-            '4_GRID_V': 'noen14lanhdoc.png', 
-            '8_VERTICAL': 'noen18anh.png'
-        }
-    },
+        id: 'noen',
+name: 'Noen 1',
+type: 'image',
+src: {
+    '1_PHOTO': './Noen/K1/khung1.png',      // Thêm dấu ./ để chỉ định thư mục hiện tại (tốt hơn)
+    '4_VERTICAL': './Noen/K1/khung2.png', 
+    '4_GRID': './Noen/K1/khung3.png',
+    
+    // Nếu bạn thiết kế khung cho lưới dọc thì thêm vào đây
+    '4_GRID_V': './Noen/K1/khung4.png', 
+    '8_VERTICAL': './Noen/K1/khung5.png'
+}
+        },
+    
     {
         id: 'hellokitty',      
         name: 'Hello Kitty',   
         type: 'image',       
         src: {
-            '1_PHOTO': 'hellokitty11anh.png',
-            '4_VERTICAL': 'hellokitty14anh.png', 
-            '4_GRID': 'hellokitty14lanh.png',
-            '4_GRID_V': 'hellokitty1.png', 
-            '8_VERTICAL': 'hellokitty18anh.png'
+           '1_PHOTO': './Hello kitty/K1/khung1.png',     
+    '4_VERTICAL': './Hello kitty/K1/khung2.png', 
+    '4_GRID': './Hello kitty/K1/khung3.png',
+    '4_GRID_V': './Hello kitty/K1/khung4.png', 
+    '8_VERTICAL': './Hello kitty/K1/khung5.png'
+        }
+    },
+      {
+        id: 'chiikawa',      
+        name: 'Chiikawa',   
+        type: 'image',       
+        src: {
+           '1_PHOTO': './Chiikawa/K1/khung1.png',     
+    '4_VERTICAL': './Chiikawa/K1/khung2.png', 
+    '4_GRID': './Chiikawa/K1/khung3.png',
+    '4_GRID_V': './Chiikawa/K1/khung4.png', 
+    '8_VERTICAL': './Chiikawa/K1/khung5.png'
         }
     }
 ];
