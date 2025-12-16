@@ -192,6 +192,18 @@ src: {
     '4_GRID_V': './Chiikawa/K1/khung4.png', 
     '8_VERTICAL': './Chiikawa/K1/khung5.png'
         }
+    },
+    {
+        id: 'zootopia',      
+        name: 'Zootopia',   
+        type: 'image',       
+        src: {
+           '1_PHOTO': './Zootopia/K1/khung1.png',     
+    '4_VERTICAL': './Zootopia/K1/khung2.png', 
+    '4_GRID': './Zootopia/K1/khung3.png',
+    '4_GRID_V': './Zootopia/K1/khung4.png', 
+    '8_VERTICAL': './Zootopia/K1/khung5.png'
+        }
     }
 ];
 
